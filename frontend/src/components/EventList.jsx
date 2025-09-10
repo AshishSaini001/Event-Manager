@@ -1,9 +1,11 @@
 import { useDispatch, useSelector } from "react-redux";
 import { deleteEvent, updateEvent } from "../features/eventSlice";
 import { useState } from "react";
-import {Trash,SquarePen} from "lucide-react"
+import { Trash, SquarePen } from "lucide-react";
+import ApplyForm from "./ApplyForm";
 
 export default function EventList() {
+  const [applyId, setApplyId] = useState(null);
   const dispatch = useDispatch();
   const events = useSelector((state) => state.event.events);
 
@@ -78,58 +80,74 @@ export default function EventList() {
       {filteredEvents.map((event) => (
         <div
           key={event.id}
-          className="flex items-center justify-between p-2 border rounded"
+          className="flex flex-col gap-2 p-2 border rounded mb-2"
         >
-          {editingId === event.id ? (
-            <>
-              <input
-                className="mr-2 px-2 py-1 rounded"
-                value={editName}
-                onChange={(e) => setEditName(e.target.value)}
-                placeholder="Event Name"
-              />
-              <input
-                className="mr-2 px-2 py-1 rounded"
-                value={editDate}
-                onChange={(e) => setEditDate(e.target.value)}
-                type="date"
-              />
-              <div className="flex space-x-2">
-                <button
-                  onClick={() => handleEditSave(event.id)}
-                  className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600"
-                >
-                  Save
-                </button>
-                <button
-                  onClick={cancelEdit}
-                  className="bg-gray-500 text-white px-3 py-1 rounded hover:bg-gray-600 cursor-pointer"
-                >
-                  Cancel
-                </button>
-              </div>
-            </>
-          ) : (
-            <>
-              <span>
-                {event.name} -{" "}
-                <span className="text-gray-800">{event.date}</span>
-              </span>
-              <div className="flex space-x-3">
-                <button
-                  onClick={() => startEdit(event)}
-                  className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 cursor-pointer"
-                >
-                 < SquarePen />
-                </button>
-                <button
-                  onClick={() => handleDelete(event.id)}
-                  className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 cursor-pointer"
-                >
-                 <Trash />
-                </button>
-              </div>
-            </>
+          <div className="flex items-center justify-between">
+            {editingId === event.id ? (
+              <>
+                <input
+                  className="mr-2 px-2 py-1 rounded"
+                  value={editName}
+                  onChange={(e) => setEditName(e.target.value)}
+                  placeholder="Event Name"
+                />
+                <input
+                  className="mr-2 px-2 py-1 rounded"
+                  value={editDate}
+                  onChange={(e) => setEditDate(e.target.value)}
+                  type="date"
+                />
+                <div className="flex space-x-2">
+                  <button
+                    onClick={() => handleEditSave(event.id)}
+                    className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600"
+                  >
+                    Save
+                  </button>
+                  <button
+                    onClick={cancelEdit}
+                    className="bg-gray-500 text-white px-3 py-1 rounded hover:bg-gray-600 cursor-pointer"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                <span>
+                  {event.name} -{" "}
+                  <span className="text-gray-800">{event.date}</span>
+                </span>
+                <div className="flex space-x-3">
+                  <button
+                    onClick={() => startEdit(event)}
+                    className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 cursor-pointer"
+                  >
+                    <SquarePen />
+                  </button>
+                  <button
+                    onClick={() => handleDelete(event.id)}
+                    className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 cursor-pointer"
+                  >
+                    <Trash />
+                  </button>
+                  <button
+                    onClick={() => setApplyId(event.id)}
+                    className="bg-green-500 text-white px-3 py-1 rounded hover:bg-purple-600 cursor-pointer"
+                  >
+                    Apply
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+          {/* Apply form (shown only for the selected event) */}
+          {applyId === event.id && (
+            <ApplyForm
+              eventId={event.id}
+              onSuccess={() => setApplyId(null)}
+              onCancel={() => setApplyId(null)}
+            />
           )}
         </div>
       ))}

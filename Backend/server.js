@@ -8,6 +8,8 @@ app.use(express.json());
 const port=5000;
 
 app.use('/events',router);
+app.use('/events',require('./routes/applyRouter'));
+
 
 
 app.listen(port, () => {
